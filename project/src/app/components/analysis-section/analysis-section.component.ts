@@ -1,5 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 @Component({
   selector: 'app-analysis-section',
@@ -14,7 +18,7 @@ import { CommonModule } from '@angular/common';
             <h3 class="text-xl font-semibold mb-4">Match Score</h3>
             <div class="flex items-center justify-center">
               <div class="relative w-32 h-32">
-                <svg class="transform -rotate-90 w-32 h-32">
+                <svg #scoreCircle class="transform -rotate-90 w-32 h-32">
                   <circle
                     cx="64"
                     cy="64"
@@ -24,6 +28,7 @@ import { CommonModule } from '@angular/common';
                     fill="none"
                   />
                   <circle
+                    #progressCircle
                     cx="64"
                     cy="64"
                     r="56"
@@ -31,12 +36,12 @@ import { CommonModule } from '@angular/common';
                     stroke-width="8"
                     fill="none"
                     [attr.stroke-dasharray]="'352'"
-                    [attr.stroke-dashoffset]="352 * (1 - 0.75)"
+                    stroke-dashoffset="352"
                     class="transition-all duration-1000"
                   />
                 </svg>
                 <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                  <span class="text-3xl font-bold">75%</span>
+                  <span #scoreNumber class="text-3xl font-bold">0%</span>
                 </div>
               </div>
             </div>
@@ -88,4 +93,36 @@ import { CommonModule } from '@angular/common';
     </section>
   `
 })
-export class AnalysisSectionComponent {}
+export class AnalysisSectionComponent implements AfterViewInit {
+  @ViewChild('progressCircle') progressCircle!: ElementRef;
+  @ViewChild('scoreNumber') scoreNumber!: ElementRef;
+
+  ngAfterViewInit() {
+    ScrollTrigger.create({
+      trigger: this.progressCircle.nativeElement,
+      start: 'top center+=100',
+      onEnter: () => this.animateScore()
+    });
+  }
+
+  private animateScore(): void {
+    const duration = 2;
+    const targetScore = 75;
+    
+    gsap.to(this.progressCircle.nativeElement, {
+      strokeDashoffset: 352 * (1 - targetScore/100),
+      duration,
+      ease: 'power2.out'
+    });
+
+    const obj = { val: 0 };
+    gsap.to(obj, {
+      val: targetScore,
+      duration,
+      ease: 'power2.out',
+      onUpdate: () => {
+        this.scoreNumber.nativeElement.textContent = `${Math.round(obj.val)}%`;
+      }
+    });
+  }
+}
