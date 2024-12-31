@@ -8,11 +8,11 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule, FaqItemComponent],
   template: `
     <section class="py-16 bg-gradient-to-b from-gray-50 to-white">
-      <div class="container mx-auto px-14">
-        <div class="max-w-[1400px] mx-auto">
+      <div class="container mx-auto px-4">
+        <div class="w-[90%] md:w-[980px] mx-auto">
           <div class="mb-8">
-            <h2 class="text-left text-[28px] xl:text-[36px] font-bold mb-2">Frequently Asked Questions</h2>
-            <p class="text-left text-[18px] text-gray-600">Find answers to common questions about our AI-powered job matching platform</p>
+            <h2 class="text-left text-[28px] xl:text-[36px] font-bold mb-2 text-[#2c2c2c]">Frequently Asked Questions</h2>
+            <p class="text-left text-[18px] text-[#2c2c2c]">Find answers to common questions about our AI-powered job matching platform</p>
           </div>
           <div class="border-t border-gray-200">
             <app-faq-item 

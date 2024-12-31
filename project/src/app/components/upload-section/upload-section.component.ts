@@ -6,25 +6,22 @@ import { FileUploadComponent } from './file-upload/file-upload.component';
   standalone: true,
   imports: [FileUploadComponent],
   template: `
-    <section class="bg-blue-600 py-12">
-      <div class="container mx-auto px-14">
-        <div class="max-w-[1200px] mx-auto">
-          <div class="bg-white p-12 rounded-lg shadow-lg">
+    <section class="bg-blue-600 py-12 overflow-x-auto min-h-screen md:min-h-fit">
+      <div class="flex justify-center min-w-full h-full">
+        <div class="w-[95%] max-w-[1900px] h-full">
+          <div class="bg-white p-8 md:p-12 rounded-lg shadow-lg min-h-[calc(100vh-6rem)] md:min-h-[450px] mx-4 md:mx-0">
             <div class="text-center mb-8">
-              <h2 class="text-[28px] xl:text-[36px] font-bold mb-2">Job Role Analysis</h2>
-              <p class="text-[18px] text-gray-600">Get insights about the ideal candidate profile for this role</p>
+              <h2 class="text-[36px] md:text-[44px] font-bold mb-2 text-[#222222]">Job Role Analysis</h2>
+              <p class="text-[16px] md:text-[18px] text-[#222222]">Upload your job description and resume (optional) to analyze the match between the role requirements and your qualifications</p>
             </div>
-            
-            <div class="space-y-8">
-              <div>
-                <h3 class="text-[18px] font-semibold mb-3">1. Upload Job Description</h3>
-                <app-file-upload label="Job Description" />
-              </div>
-              
-              <div>
-                <h3 class="text-[18px] font-semibold mb-3">2. Compare Your Resume (Optional)</h3>
-                <p class="text-[18px] text-gray-600 mb-3">After analyzing the ideal candidate profile, you can compare your resume to see how it matches.</p>
-                <app-file-upload label="Resume" [isOptional]="true" />
+
+            <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 md:p-8 min-h-[500px] md:min-h-[300px] flex items-center justify-center">
+              <div class="flex flex-col items-center space-y-6">
+                <svg class="w-20 h-20 text-gray-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                </svg>
+                <app-file-upload label="Upload Documents" />
+                <p class="text-[16px] md:text-[18px] text-[#222222] text-center">Drag and drop your files here or click to browse</p>
               </div>
             </div>
           </div>

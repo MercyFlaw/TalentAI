@@ -6,19 +6,15 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div [class]="'border-2 border-dashed rounded-lg p-6 ' + (isOptional ? 'bg-yellow-50 border-yellow-300' : 'border-gray-300')">
-      <div class="text-center">
-        <svg class="mx-auto w-12 h-12 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+    <div class="w-full max-w-[280px] md:max-w-none">
+      <button 
+        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-full px-8 md:px-16 py-3 md:py-4 flex items-center justify-center gap-2 md:gap-3 transition-colors"
+      >
+        <svg class="w-6 md:w-7 h-6 md:h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
         </svg>
-        <p class="text-[18px] text-gray-600 mb-2">
-          Upload {{ label }}
-          <span *ngIf="isOptional" class="text-yellow-600 text-sm">(Optional)</span>
-        </p>
-        <button class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-[18px]">
-          Select {{ label }}
-        </button>
-      </div>
+        <span class="text-[14px] md:text-[18px] whitespace-nowrap">{{ label }}</span>
+      </button>
     </div>
   `
 })

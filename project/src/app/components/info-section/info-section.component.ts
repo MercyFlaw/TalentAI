@@ -10,8 +10,8 @@ import { CommonModule } from '@angular/common';
       <div class="container mx-auto px-14">
         <div class="max-w-[1400px] mx-auto">
           <div class="mb-8">
-            <h2 class="text-left text-[28px] xl:text-[36px] font-bold mb-2">Why Choose Our Platform?</h2>
-            <p class="text-left text-[18px] text-gray-600">Experience the power of AI-driven job matching technology</p>
+            <h2 class="text-left text-[28px] xl:text-[36px] font-bold mb-2 text-[#2c2c2c]">Why Choose Our Platform?</h2>
+            <p class="text-left text-[18px] text-[#2c2c2c]">Experience the power of AI-driven job matching technology</p>
           </div>
           <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 p-8">
@@ -22,8 +22,8 @@ import { CommonModule } from '@angular/common';
                   </svg>
                 </div>
               </div>
-              <h3 class="text-[18px] font-bold mb-3 text-gray-800">AI-Powered Matching</h3>
-              <p class="text-[18px] text-gray-600 leading-[27px]">Advanced GPT analysis for precise matches and detailed insights</p>
+              <h3 class="text-[18px] font-bold mb-3 text-[#2c2c2c]">AI-Powered Matching</h3>
+              <p class="text-[18px] text-[#2c2c2c] leading-[27px]">Advanced GPT analysis for precise matches and detailed insights</p>
             </div>
 
             <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 p-8">
@@ -34,8 +34,8 @@ import { CommonModule } from '@angular/common';
                   </svg>
                 </div>
               </div>
-              <h3 class="text-[18px] font-bold mb-3 text-gray-800">Instant Results</h3>
-              <p class="text-[18px] text-gray-600 leading-[27px]">Get immediate feedback and analysis of your job match potential</p>
+              <h3 class="text-[18px] font-bold mb-3 text-[#2c2c2c]">Instant Results</h3>
+              <p class="text-[18px] text-[#2c2c2c] leading-[27px]">Get immediate feedback and analysis of your job match potential</p>
             </div>
 
             <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 p-8">
@@ -46,8 +46,8 @@ import { CommonModule } from '@angular/common';
                   </svg>
                 </div>
               </div>
-              <h3 class="text-[18px] font-bold mb-3 text-gray-800">Secure Processing</h3>
-              <p class="text-[18px] text-gray-600 leading-[27px]">Your data is encrypted and automatically deleted after analysis</p>
+              <h3 class="text-[18px] font-bold mb-3 text-[#2c2c2c]">Secure Processing</h3>
+              <p class="text-[18px] text-[#2c2c2c] leading-[27px]">Your data is encrypted and automatically deleted after analysis</p>
             </div>
 
             <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 p-8">
@@ -58,8 +58,8 @@ import { CommonModule } from '@angular/common';
                   </svg>
                 </div>
               </div>
-              <h3 class="text-[18px] font-bold mb-3 text-gray-800">Detailed Analytics</h3>
-              <p class="text-[18px] text-gray-600 leading-[27px]">Get comprehensive insights and improvement suggestions</p>
+              <h3 class="text-[18px] font-bold mb-3 text-[#2c2c2c]">Detailed Analytics</h3>
+              <p class="text-[18px] text-[#2c2c2c] leading-[27px]">Get comprehensive insights and improvement suggestions</p>
             </div>
           </div>
         </div>

@@ -10,8 +10,8 @@ import { CommonModule } from '@angular/common';
       <div class="container mx-auto px-14 max-w-[1400px] min-h-[669px] h-auto">
         <div class="w-full">
           <div class="mb-8">
-            <h2 class="text-left text-[28px] xl:text-[36px] font-bold mb-2">How to Get Your Job Match Analysis?</h2>
-            <p class="text-left text-[18px] text-gray-600">Follow these steps to analyze the job requirements and your potential match:</p>
+            <h2 class="text-left text-[28px] xl:text-[36px] font-bold mb-2 text-[#2c2c2c]">How to Get Your Job Match Analysis?</h2>
+            <p class="text-left text-[18px] text-[#2c2c2c]">Follow these steps to analyze the job requirements and your potential match:</p>
           </div>
           
           <!-- Desktop Layout -->
@@ -19,8 +19,8 @@ import { CommonModule } from '@angular/common';
             <div *ngFor="let step of steps" class="border-t border-gray-200">
               <div class="py-8 px-6">
                 <div class="flex gap-4">
-                  <span class="text-[21px] font-bold text-blue-600">{{step.number}}</span>
-                  <p class="text-gray-600 text-[18px] flex-1">{{step.description}}</p>
+                  <span class="text-[28px] font-bold text-blue-600">{{step.number}}</span>
+                  <p class="text-[#2c2c2c] text-[18px] flex-1">{{step.description}}</p>
                 </div>
               </div>
             </div>
@@ -33,7 +33,7 @@ import { CommonModule } from '@angular/common';
               <div class="py-8 px-4">
                 <div class="flex gap-3">
                   <span class="text-[18px] font-bold text-blue-600">{{step.number}}.</span>
-                  <p class="text-gray-600 text-[18px]">{{step.description}}</p>
+                  <p class="text-[#2c2c2c] text-[18px]">{{step.description}}</p>
                 </div>
               </div>
             </div>
