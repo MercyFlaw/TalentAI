@@ -10,46 +10,46 @@ gsap.registerPlugin(ScrollTrigger);
   standalone: true,
   imports: [CommonModule],
   template: `
-    <section class="py-8 bg-white">
-      <div class="container mx-auto px-4">
-        <div class="grid md:grid-cols-3 gap-6">
+    <section class="py-12 bg-white">
+      <div class="container mx-auto px-14">
+        <div class="grid md:grid-cols-3 gap-12 max-w-[1400px] mx-auto">
           <!-- Match Score -->
-          <div class="bg-white p-6 rounded-lg shadow-lg">
-            <h3 class="text-xl font-semibold mb-4">Match Score</h3>
+          <div class="bg-white p-10 rounded-lg shadow-lg">
+            <h3 class="text-[28px] xl:text-[36px] font-semibold mb-6">Match Score</h3>
             <div class="flex items-center justify-center">
-              <div class="relative w-32 h-32">
-                <svg #scoreCircle class="transform -rotate-90 w-32 h-32">
+              <div class="relative w-48 h-48">
+                <svg #scoreCircle class="transform -rotate-90 w-48 h-48">
                   <circle
-                    cx="64"
-                    cy="64"
-                    r="56"
+                    cx="96"
+                    cy="96"
+                    r="88"
                     stroke="#e5e7eb"
                     stroke-width="8"
                     fill="none"
                   />
                   <circle
                     #progressCircle
-                    cx="64"
-                    cy="64"
-                    r="56"
+                    cx="96"
+                    cy="96"
+                    r="88"
                     stroke="#3b82f6"
                     stroke-width="8"
                     fill="none"
-                    [attr.stroke-dasharray]="'352'"
-                    stroke-dashoffset="352"
+                    [attr.stroke-dasharray]="'552'"
+                    stroke-dashoffset="552"
                     class="transition-all duration-1000"
                   />
                 </svg>
                 <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                  <span #scoreNumber class="text-3xl font-bold">0%</span>
+                  <span #scoreNumber class="text-[36px] font-bold">0%</span>
                 </div>
               </div>
             </div>
           </div>
 
           <!-- Ideal Skills -->
-          <div class="bg-white p-6 rounded-lg shadow-lg">
-            <h3 class="text-xl font-semibold mb-4">Required Skills</h3>
+          <div class="bg-white p-10 rounded-lg shadow-lg">
+            <h3 class="text-[28px] xl:text-[36px] font-semibold mb-6">Required Skills</h3>
             <ul class="space-y-3">
               <li class="text-green-600">
                 ★ Experience building large scale mobile applications using Swift
@@ -67,8 +67,8 @@ gsap.registerPlugin(ScrollTrigger);
           </div>
 
           <!-- Your Skills -->
-          <div class="bg-white p-6 rounded-lg shadow-lg">
-            <h3 class="text-xl font-semibold mb-4">Your Skills Match</h3>
+          <div class="bg-white p-10 rounded-lg shadow-lg">
+            <h3 class="text-[28px] xl:text-[36px] font-semibold mb-6">Your Skills Match</h3>
             <ul class="space-y-3">
               <li class="text-red-500 flex items-start">
                 <span class="mr-2">❌</span>
@@ -107,7 +107,7 @@ export class AnalysisSectionComponent implements AfterViewInit {
 
   private animateScore(): void {
     const duration = 2;
-    const targetScore = 75;
+    const targetScore = 80;
     
     gsap.to(this.progressCircle.nativeElement, {
       strokeDashoffset: 352 * (1 - targetScore/100),

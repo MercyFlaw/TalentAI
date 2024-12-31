@@ -6,26 +6,29 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div class="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 mb-4">
-      <button 
-        (click)="isOpen = !isOpen"
-        class="w-full px-8 py-6 text-left flex justify-between items-center group">
-        <span class="font-semibold text-lg text-gray-800 group-hover:text-blue-600 transition-colors">
-          {{ question }}
-        </span>
-        <svg 
-          class="w-6 h-6 text-gray-400 group-hover:text-blue-600 transition-all duration-300" 
-          [class.rotate-180]="isOpen"
-          fill="none" 
-          stroke="currentColor" 
-          viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-        </svg>
-      </button>
-      <div 
-        *ngIf="isOpen" 
-        class="px-8 py-6 border-t border-gray-100">
-        <p class="text-gray-600 leading-relaxed">{{ answer }}</p>
+    <div class="border-b border-gray-200">
+      <div class="py-8 px-6">
+        <button 
+          (click)="isOpen = !isOpen"
+          class="w-full flex justify-between items-center"
+        >
+          <span class="text-[18px] font-semibold text-gray-800">{{ question }}</span>
+          <svg 
+            class="w-5 h-5 text-gray-400 transition-transform duration-200"
+            [class.rotate-180]="isOpen"
+            fill="none" 
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path d="M19 9l-7 7-7-7" strokeWidth="2" strokeLinecap="round"/>
+          </svg>
+        </button>
+        <div 
+          *ngIf="isOpen"
+          class="mt-4 pr-12"
+        >
+          <p class="text-[18px] text-gray-600 leading-[27px]">{{ answer }}</p>
+        </div>
       </div>
     </div>
   `
