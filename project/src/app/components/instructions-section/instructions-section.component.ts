@@ -1,6 +1,10 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
+/**
+ * Component that displays step-by-step instructions for using the application
+ * Provides both desktop and mobile-friendly layouts
+ */
 @Component({
   selector: 'app-instructions-section',
   standalone: true,
@@ -45,6 +49,10 @@ import { CommonModule } from '@angular/common';
   `
 })
 export class InstructionsSectionComponent {
+  /** 
+   * Defines the steps for using the application
+   * Each step includes a number, title, and description
+   */
   steps = [
     {
       number: 1,

@@ -1,128 +1,115 @@
-import { Component, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
+import { Component, Input, ViewChild, ElementRef, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { ResumeComparisonResult } from '../../services/resume-comparison.service';
 
-gsap.registerPlugin(ScrollTrigger);
-
+/**
+ * Component that displays the resume analysis results
+ * Shows match score and skills comparison in a visual format
+ */
 @Component({
   selector: 'app-analysis-section',
   standalone: true,
   imports: [CommonModule],
   template: `
-    <section class="py-12 bg-white">
-      <div class="container mx-auto px-14">
-        <div class="grid md:grid-cols-3 gap-12 max-w-[1400px] mx-auto">
+    <section class="py-8 sm:py-12 bg-white">
+      <div class="container mx-auto px-4 sm:px-14">
+        <div class="grid md:grid-cols-2 gap-6 sm:gap-12 max-w-[1400px] mx-auto">
           <!-- Match Score -->
-          <div class="bg-white p-10 rounded-lg shadow-lg">
+          <div class="bg-white p-6 sm:p-10 rounded-lg shadow-lg">
             <h3 class="text-[28px] xl:text-[36px] font-semibold mb-6 text-[#2c2c2c]">Match Score</h3>
-            <div class="flex items-center justify-center">
-              <div class="relative w-48 h-48">
-                <svg #scoreCircle class="transform -rotate-90 w-48 h-48">
+            <div class="flex items-center justify-center mb-6">
+              <div class="relative w-36 h-36 sm:w-48 sm:h-48">
+                <svg #scoreCircle class="transform -rotate-90 w-full h-full">
                   <circle
-                    cx="96"
-                    cy="96"
-                    r="88"
+                    cx="50%"
+                    cy="50%"
+                    [attr.r]="radius"
                     stroke="#e5e7eb"
                     stroke-width="8"
                     fill="none"
                   />
                   <circle
                     #progressCircle
-                    cx="96"
-                    cy="96"
-                    r="88"
+                    cx="50%"
+                    cy="50%"
+                    [attr.r]="radius"
                     stroke="#3b82f6"
                     stroke-width="8"
                     fill="none"
-                    [attr.stroke-dasharray]="'552'"
-                    stroke-dashoffset="552"
+                    [attr.stroke-dasharray]="circumference"
+                    [attr.stroke-dashoffset]="dashOffset"
                     class="transition-all duration-1000"
                   />
                 </svg>
                 <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                  <span #scoreNumber class="text-[36px] font-bold text-[#2c2c2c]">0%</span>
+                  <span class="text-[28px] sm:text-[36px] font-bold text-[#2c2c2c]">
+                    {{comparisonResult ? comparisonResult.matchScore + '%' : '0%'}}
+                  </span>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Ideal Skills -->
-          <div class="bg-white p-10 rounded-lg shadow-lg">
-            <h3 class="text-[28px] xl:text-[36px] font-semibold mb-6 text-[#2c2c2c]">Required Skills</h3>
-            <ul class="space-y-3">
-              <li class="text-green-600">
-                ★ Experience building large scale mobile applications using Swift
-              </li>
-              <li class="text-green-600">
-                ★ 5+ years of iOS development experience
-              </li>
-              <li class="text-blue-800">
-                ◆ Experience using Golang
-              </li>
-              <li class="text-blue-800">
-                ◆ Experience with CI/CD pipelines
-              </li>
-            </ul>
-          </div>
+          <!-- Skills Analysis -->
+          <div class="bg-white p-6 sm:p-10 rounded-lg shadow-lg">
+            <h3 class="text-[28px] xl:text-[36px] font-semibold mb-6 text-[#2c2c2c]">Skills Analysis</h3>
+            <div class="space-y-6 sm:space-y-8">
+              <ng-container *ngIf="comparisonResult; else defaultAnalysis">
+                <!-- Matching Skills -->
+                <div>
+                  <h4 class="text-[18px] sm:text-[20px] font-medium text-green-600 mb-3 sm:mb-4">Matching Skills</h4>
+                  <p class="text-[16px] leading-relaxed text-gray-700">
+                    Your profile demonstrates strong alignment in: 
+                    <span *ngFor="let skill of comparisonResult.skillsComparison.matching; let last = last">
+                      <span class="text-green-700 font-medium">{{skill}}</span>{{last ? '' : ', '}}
+                    </span>
+                  </p>
+                </div>
 
-          <!-- Your Skills -->
-          <div class="bg-white p-10 rounded-lg shadow-lg">
-            <h3 class="text-[28px] xl:text-[36px] font-semibold mb-6 text-[#2c2c2c]">Your Skills Match</h3>
-            <ul class="space-y-3">
-              <li class="text-red-500 flex items-start">
-                <span class="mr-2">❌</span>
-                <span class="text-[#2c2c2c]">Experience building large scale mobile applications using Swift</span>
-              </li>
-              <li class="text-red-500 flex items-start">
-                <span class="mr-2">❌</span>
-                <span class="text-[#2c2c2c]">5+ years of iOS development experience</span>
-              </li>
-              <li class="text-green-600 flex items-start">
-                <span class="mr-2">✓</span>
-                <span class="text-[#2c2c2c]">Experience using Golang</span>
-              </li>
-              <li class="text-green-600 flex items-start">
-                <span class="mr-2">✓</span>
-                <span class="text-[#2c2c2c]">Experience with CI/CD pipelines</span>
-              </li>
-            </ul>
+                <!-- Missing Skills -->
+                <div>
+                  <h4 class="text-[18px] sm:text-[20px] font-medium text-amber-600 mb-3 sm:mb-4">Areas for Development</h4>
+                  <p class="text-[16px] leading-relaxed text-gray-700">
+                    Consider focusing on: 
+                    <span *ngFor="let skill of comparisonResult.skillsComparison.missing; let last = last">
+                      <span class="text-amber-700 font-medium">{{skill}}</span>{{last ? '' : ', '}}
+                    </span>
+                  </p>
+                </div>
+              </ng-container>
+              <ng-template #defaultAnalysis>
+                <p class="text-gray-500 text-[16px]">Upload your resume to see skills analysis</p>
+              </ng-template>
+            </div>
           </div>
         </div>
       </div>
     </section>
   `
 })
-export class AnalysisSectionComponent implements AfterViewInit {
+export class AnalysisSectionComponent implements OnChanges {
+  @Input() comparisonResult?: ResumeComparisonResult;
   @ViewChild('progressCircle') progressCircle!: ElementRef;
-  @ViewChild('scoreNumber') scoreNumber!: ElementRef;
+  
+  /** Progress circle radius calculation for SVG animation */
+  radius = 88;
+  
+  /** Progress circle circumference calculation for SVG animation */
+  circumference = 2 * Math.PI * this.radius;
 
-  ngAfterViewInit() {
-    ScrollTrigger.create({
-      trigger: this.progressCircle.nativeElement,
-      start: 'top center+=100',
-      onEnter: () => this.animateScore()
-    });
+  /**
+   * Calculates the stroke dash offset for the progress circle
+   * Used to animate the match score percentage
+   */
+  get dashOffset(): number {
+    if (!this.comparisonResult) return this.circumference;
+    const progress = this.comparisonResult.matchScore / 100;
+    return this.circumference * (1 - progress);
   }
 
-  private animateScore(): void {
-    const duration = 2;
-    const targetScore = 80;
-    
-    gsap.to(this.progressCircle.nativeElement, {
-      strokeDashoffset: 352 * (1 - targetScore/100),
-      duration,
-      ease: 'power2.out'
-    });
-
-    const obj = { val: 0 };
-    gsap.to(obj, {
-      val: targetScore,
-      duration,
-      ease: 'power2.out',
-      onUpdate: () => {
-        this.scoreNumber.nativeElement.textContent = `${Math.round(obj.val)}%`;
-      }
-    });
+  ngOnChanges(): void {
+    // Adjust radius for mobile screens
+    this.radius = window.innerWidth < 640 ? 66 : 88;
+    this.circumference = 2 * Math.PI * this.radius;
   }
 }

@@ -14,7 +14,13 @@
               "extractLicenses": false,
               "namedChunks": true,
               "optimization": false,
-              "sourceMap": true
+              "sourceMap": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.development.ts"
+                }
+              ]
             },
             "production": {
               "aot": true,
@@ -22,13 +28,20 @@
               "namedChunks": false,
               "optimization": true,
               "outputHashing": "all",
-              "sourceMap": false
+              "sourceMap": false,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ]
             }
           },
           "options": {
             "assets": [
               "src/favicon.ico",
-              "src/_redirects"
+              "src/_redirects",
+              "src/assets/training_data.csv"
             ],
             "index": "src/index.html",
             "browser": "src/main.ts",

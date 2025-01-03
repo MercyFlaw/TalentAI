@@ -1,6 +1,10 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
+/**
+ * Component that displays the platform's key features and benefits
+ * Uses a responsive grid layout with feature cards
+ */
 @Component({
   selector: 'app-info-section',
   standalone: true,
