@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, map, switchMap, tap, catchError } from 'rxjs';
+import { Observable, map, switchMap } from 'rxjs';
 import { environment } from '../../environments/environment.prod';
 
 export interface AnalysisResult {
@@ -52,41 +52,31 @@ export class GptAnalysisService {
   private headers: HttpHeaders;
 
   constructor(private http: HttpClient) {
-    console.log('=== GPT Analysis Service Initialization ===');
-    console.log('Environment:', environment.production ? 'Production' : 'Development');
-    console.log('API Key exists:', !!environment.openaiApiKey);
-    console.log('API Key length:', environment.openaiApiKey?.length);
-    console.log('API Key starts with:', environment.openaiApiKey?.substring(0, 7));
-    
     this.headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Authorization: `Bearer ${environment.openaiApiKey}`
     });
-    
-    console.log('Headers set:', this.headers.has('Authorization'));
   }
 
   analyzeJobDescription(jobDescription: string): Observable<AnalysisResult> {
-    console.log('=== Starting Job Analysis ===');
-    console.log('Job Description Length:', jobDescription.length);
-    
-    const payload = {
-      model: 'gpt-4o-mini',
-      messages: [
-        {
-          role: 'system',
-          content: 'You are an expert at converting job descriptions into structured candidate profiles. Return only valid JSON. Do not use markdown formatting or code blocks. The response should be a raw JSON object only.'
-        },
-        {
-          role: 'user',
-          content: `
+    return this.extractJobData(jobDescription).pipe(
+      switchMap((structuredData) => this.generateIdealProfile(structuredData))
+    );
+  }
+
+  /**
+   * Processes job description text to extract structured data
+   * Uses GPT to identify requirements, skills, and create ideal profiles
+   * @param jobDescription - Raw job description text
+   * @returns Observable<AnalysisResult> - Structured job data and ideal candidate profile
+   */
+  private extractJobData(jobDescription: string): Observable<AnalysisResult> {
+    const extractionPrompt = `
 Analyze this job description and extract key info as valid JSON only. 
 Format as a complete candidate profile matching this exact structure.
 Use double quotes for all strings and properties.
-
 Job Description:
 ${jobDescription}
-
 Return only valid JSON matching this structure (no additional text):
 {
   "programmingLanguages": [],
@@ -123,47 +113,33 @@ Return only valid JSON matching this structure (no additional text):
       "soft": []
     }
   }
-}`
+}`;
+
+    const payload = {
+      model: 'gpt-4o-mini',
+      messages: [
+        {
+          role: 'system',
+          content: 'You are an expert at converting job descriptions into structured candidate profiles. Return only valid JSON. Do not use markdown formatting or code blocks. The response should be a raw JSON object only.'
+        },
+        {
+          role: 'user',
+          content: extractionPrompt
         }
       ],
       temperature: 0.3,
       max_tokens: 1500
     };
 
-    console.log('Request Payload:', payload);
-    console.log('Headers being sent:', this.headers.keys());
-
     return this.http.post<any>(this.apiUrl, payload, { headers: this.headers }).pipe(
-      map(response => {
-        console.log('Raw API Response:', response);
-        
-        if (!response.choices?.[0]?.message?.content) {
-          throw new Error('Invalid API response format');
-        }
-
+      map((response) => {
         const content = response.choices[0].message.content.trim();
-        console.log('Parsed Content:', content);
-
         try {
-          const parsed = JSON.parse(content);
-          
-          // Validate the parsed response has required structure
-          if (!parsed.idealCandidate?.profile) {
-            console.error('Missing required profile structure:', parsed);
-            throw new Error('Invalid response structure');
-          }
-          
-          console.log('Successfully parsed analysis:', parsed);
-          return parsed as AnalysisResult;
+          return JSON.parse(content);
         } catch (error) {
-          console.error('Error parsing analysis response:', error);
-          console.error('Problematic content:', content);
-          throw new Error('Failed to parse analysis results');
+          console.error('Error parsing extraction response:', error);
+          throw new Error('Failed to parse job data');
         }
-      }),
-      catchError(error => {
-        console.error('Analysis Error:', error);
-        throw error;
       })
     );
   }
@@ -177,10 +153,8 @@ Format as a professional resume showcasing the perfect candidate for this role.
 - Escape all newlines with "\\n"
 - Do not add any text or formatting outside the JSON object
 - Ensure all JSON is properly escaped and valid
-
 Base the profile on this job data:
 ${JSON.stringify(jobData, null, 2)}
-
 Required format:
 {
   ... (keep all job data fields) ...,
@@ -223,7 +197,6 @@ Required format:
     }
   }
 }
-
 Guidelines:
 1. Summary: Focus on candidate's proven expertise and impact
 2. Key Strengths: Each should be a clear, specific achievement with metrics
@@ -252,7 +225,7 @@ Guidelines:
     return this.http.post<any>(this.apiUrl, payload, { headers: this.headers }).pipe(
       map((response) => {
         let content = response.choices[0].message.content.trim();
-        
+
         // Remove any markdown formatting if present
         if (content.startsWith('```json')) {
           content = content.replace(/^```json\n/, '').replace(/\n```$/, '');
