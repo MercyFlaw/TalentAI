@@ -30,10 +30,18 @@ export class ResumeComparisonService {
   private headers: HttpHeaders;
 
   constructor(private http: HttpClient) {
+    console.log('=== Resume Comparison Service Initialization ===');
+    console.log('Environment:', environment.production ? 'Production' : 'Development');
+    console.log('API Key exists:', !!environment.openaiApiKey);
+    console.log('API Key length:', environment.openaiApiKey?.length);
+    console.log('API Key starts with:', environment.openaiApiKey?.substring(0, 7));
+    
     this.headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Authorization: `Bearer ${environment.openaiApiKey}`
     });
+    
+    console.log('Headers set:', this.headers.has('Authorization'));
   }
 
   /**
@@ -95,6 +103,9 @@ Analysis Guidelines:
       temperature: 0.3,
       max_tokens: 1000
     };
+
+    console.log('Request Payload:', payload);
+    console.log('Headers being sent:', this.headers.keys());
 
     return this.http.post<any>(this.apiUrl, payload, { headers: this.headers })
       .pipe(

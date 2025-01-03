@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, map, switchMap } from 'rxjs';
+import { Observable, map, switchMap, tap, catchError } from 'rxjs';
 import { environment } from '../../environments/environment.prod';
 
 export interface AnalysisResult {
@@ -52,26 +52,34 @@ export class GptAnalysisService {
   private headers: HttpHeaders;
 
   constructor(private http: HttpClient) {
+    console.log('=== GPT Analysis Service Initialization ===');
+    console.log('Environment:', environment.production ? 'Production' : 'Development');
+    console.log('API Key exists:', !!environment.openaiApiKey);
+    console.log('API Key length:', environment.openaiApiKey?.length);
+    console.log('API Key starts with:', environment.openaiApiKey?.substring(0, 7));
+    
     this.headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Authorization: `Bearer ${environment.openaiApiKey}`
     });
+    
+    console.log('Headers set:', this.headers.has('Authorization'));
   }
 
   analyzeJobDescription(jobDescription: string): Observable<AnalysisResult> {
-    return this.extractJobData(jobDescription).pipe(
-      switchMap((structuredData) => this.generateIdealProfile(structuredData))
-    );
-  }
-
-  /**
-   * Processes job description text to extract structured data
-   * Uses GPT to identify requirements, skills, and create ideal profiles
-   * @param jobDescription - Raw job description text
-   * @returns Observable<AnalysisResult> - Structured job data and ideal candidate profile
-   */
-  private extractJobData(jobDescription: string): Observable<AnalysisResult> {
-    const extractionPrompt = `
+    console.log('=== Starting Job Analysis ===');
+    console.log('Job Description Length:', jobDescription.length);
+    
+    const payload = {
+      model: 'gpt-4o-mini',
+      messages: [
+        {
+          role: 'system',
+          content: 'You are an expert at converting job descriptions into structured candidate profiles. Return only valid JSON. Do not use markdown formatting or code blocks. The response should be a raw JSON object only.'
+        },
+        {
+          role: 'user',
+          content: `
 Analyze this job description and extract key info as valid JSON only. 
 Format as a complete candidate profile matching this exact structure.
 Use double quotes for all strings and properties.
@@ -115,33 +123,29 @@ Return only valid JSON matching this structure (no additional text):
       "soft": []
     }
   }
-}`;
-
-    const payload = {
-      model: 'gpt-4o-mini',
-      messages: [
-        {
-          role: 'system',
-          content: 'You are an expert at converting job descriptions into structured candidate profiles. Return only valid JSON. Do not use markdown formatting or code blocks. The response should be a raw JSON object only.'
-        },
-        {
-          role: 'user',
-          content: extractionPrompt
+}`
         }
       ],
       temperature: 0.3,
       max_tokens: 1500
     };
 
+    console.log('Request Payload:', payload);
+    console.log('Headers being sent:', this.headers.keys());
+
     return this.http.post<any>(this.apiUrl, payload, { headers: this.headers }).pipe(
-      map((response) => {
-        const content = response.choices[0].message.content.trim();
-        try {
-          return JSON.parse(content);
-        } catch (error) {
-          console.error('Error parsing extraction response:', error);
-          throw new Error('Failed to parse job data');
-        }
+      tap(response => {
+        console.log('=== Successful Response ===');
+        console.log('Response received:', response);
+      }),
+      catchError(error => {
+        console.error('=== API Error Details ===');
+        console.error('Error Status:', error.status);
+        console.error('Error Message:', error.message);
+        console.error('Error Response:', error.error);
+        console.error('Request Headers:', this.headers.keys());
+        console.error('Authorization Header:', this.headers.get('Authorization')?.substring(0, 15) + '...');
+        throw error;
       })
     );
   }
