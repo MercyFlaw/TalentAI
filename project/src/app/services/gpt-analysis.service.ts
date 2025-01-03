@@ -134,17 +134,35 @@ Return only valid JSON matching this structure (no additional text):
     console.log('Headers being sent:', this.headers.keys());
 
     return this.http.post<any>(this.apiUrl, payload, { headers: this.headers }).pipe(
-      tap(response => {
-        console.log('=== Successful Response ===');
-        console.log('Response received:', response);
+      map(response => {
+        console.log('Raw API Response:', response);
+        
+        if (!response.choices?.[0]?.message?.content) {
+          throw new Error('Invalid API response format');
+        }
+
+        const content = response.choices[0].message.content.trim();
+        console.log('Parsed Content:', content);
+
+        try {
+          const parsed = JSON.parse(content);
+          
+          // Validate the parsed response has required structure
+          if (!parsed.idealCandidate?.profile) {
+            console.error('Missing required profile structure:', parsed);
+            throw new Error('Invalid response structure');
+          }
+          
+          console.log('Successfully parsed analysis:', parsed);
+          return parsed as AnalysisResult;
+        } catch (error) {
+          console.error('Error parsing analysis response:', error);
+          console.error('Problematic content:', content);
+          throw new Error('Failed to parse analysis results');
+        }
       }),
       catchError(error => {
-        console.error('=== API Error Details ===');
-        console.error('Error Status:', error.status);
-        console.error('Error Message:', error.message);
-        console.error('Error Response:', error.error);
-        console.error('Request Headers:', this.headers.keys());
-        console.error('Authorization Header:', this.headers.get('Authorization')?.substring(0, 15) + '...');
+        console.error('Analysis Error:', error);
         throw error;
       })
     );
